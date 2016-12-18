@@ -49,21 +49,12 @@ if ser.isOpen():
                         print("DEBUG - reading serial data: " + response)
                         lineData = json.loads(response)
 
-                        if 'sender' in lineData:
-                          sender = lineData['sender']
-                          strength = lineData['strength']
-                          #lineData['time'] = time.strftime("%H:%M:%S")
-                          #lineData['date'] = time.strftime("%d/%m/%Y")
-                          #MyMqtt.publishMessage("strength", json.dumps(lineData) )
-
                         if 'nodeId' in lineData:
-                          nodeId = lineData['nodeId']
-                          itemLocation = lineData['itemLocation']
+                          senderId = lineData['senderId']
                           trigger = lineData['trigger']
                           lineData['time'] = time.strftime("%H:%M:%S")
                           lineData['date'] = time.strftime("%d/%m/%Y")
-                          lineData['sender'] = sender
-                          lineData['strength'] = strength
+                          strength = lineData['strength']
                           MyMqtt.publishMessage(nodeId, json.dumps(lineData))
 
                     except Exception, ValueError:
