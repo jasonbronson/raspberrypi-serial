@@ -1,10 +1,9 @@
 #!/usr/bin/python
 
+import paho.mqtt.publish as publish, MyEnv
 
-class MyMqtt(object):
 
-    def __init__(self):
-        self.test = ""
+def publishMessage(id, message):
+  print(message)
+  publish.single("alarm/" + str(id) , message, hostname=MyEnv.MQTT_HOST, port=MyEnv.MQTT_PORT)
 
-    def publish(self):
-        print ""

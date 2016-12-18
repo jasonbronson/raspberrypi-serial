@@ -9,8 +9,8 @@ import serial, time, json, MyMqtt, MyEnv
 #    3. x, x is bigger than 0, float allowed, timeout block call
 
 ser = serial.Serial()
-ser.port = "/dev/ttyACM0"
-ser.baudrate = 115200
+ser.port = MyEnv.SERIAL_PORT
+ser.baudrate = MyEnv.BAUD_RATE
 ser.bytesize = serial.EIGHTBITS #number of bits per bytes
 ser.parity = serial.PARITY_NONE #set parity check: no parity
 ser.stopbits = serial.STOPBITS_ONE #number of stop bits
@@ -34,31 +34,42 @@ if ser.isOpen():
                  #and discard all that is in buffer
 
         numOfLines = 0
-       
-	while True:
-          response = ser.readline()
-	  sender = ''
-	  strength = ''
-	  nodeId = ''
-          itemLocatin = ''
-	  trigger = ''
-	  if response:
-            try:
-		print("reading serial data: " + response)
-	    	lineData = json.loads(response)
-		
-		if 'sender' in lineData:
-		 sender = lineData['sender']
-	         strength = lineData['strength']
-		
-		if 'nodeId' in lineData:
-		 nodeId = lineData['nodeId']
-		 itemLocation = lineData['itemLocation']
-		 trigger = lineData['trigger']
-		 
-	    except Exception, ValueError:
-		print("JSON Decoding has failed")
-          numOfLines = numOfLines + 1
+
+        sender = ''
+        strength = ''
+        nodeId = ''
+        itemLocatin = ''
+        trigger = ''
+
+        while True:
+              response = ser.readline()
+
+              if response:
+                    try:
+                        print("DEBUG - reading serial data: " + response)
+                        lineData = json.loads(response)
+
+                        if 'sender' in lineData:
+                          sender = lineData['sender']
+                          strength = lineData['strength']
+                          #lineData['time'] = time.strftime("%H:%M:%S")
+                          #lineData['date'] = time.strftime("%d/%m/%Y")
+                          #MyMqtt.publishMessage("strength", json.dumps(lineData) )
+
+                        if 'nodeId' in lineData:
+                          nodeId = lineData['nodeId']
+                          itemLocation = lineData['itemLocation']
+                          trigger = lineData['trigger']
+                          lineData['time'] = time.strftime("%H:%M:%S")
+                          lineData['date'] = time.strftime("%d/%m/%Y")
+                          lineData['sender'] = sender
+                          lineData['strength'] = strength
+                          MyMqtt.publishMessage(nodeId, json.dumps(lineData))
+
+                    except Exception, ValueError:
+                      print("JSON Decoding has failed: " + str(ValueError) )
+
+                    numOfLines = numOfLines + 1
 
 
         ser.close()
@@ -66,4 +77,4 @@ if ser.isOpen():
         print "error communicating...: " + str(e1)
 
 else:
-    print "cannot open serial port "
+    print "cannot open serial port"
