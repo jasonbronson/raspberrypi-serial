@@ -49,13 +49,13 @@ if ser.isOpen():
                         print("DEBUG - reading serial data: " + response)
                         lineData = json.loads(response)
 
-                        if 'nodeId' in lineData:
+                        if 'senderId' in lineData:
                           senderId = lineData['senderId']
                           trigger = lineData['trigger']
                           lineData['time'] = time.strftime("%H:%M:%S")
                           lineData['date'] = time.strftime("%d/%m/%Y")
                           strength = lineData['strength']
-                          MyMqtt.publishMessage(nodeId, json.dumps(lineData))
+                          MyMqtt.publishMessage(senderId, json.dumps(lineData))
 
                     except Exception, ValueError:
                       print("JSON Decoding has failed: " + str(ValueError) )
