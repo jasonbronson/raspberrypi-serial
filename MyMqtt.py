@@ -1,10 +1,22 @@
 #!/usr/bin/python
 
+import requests, json, MyEnv
 
-class MyMqtt(object):
+url = 'https://io.adafruit.com/api/feeds/'
 
-    def __init__(self):
-        self.test = ""
+def publishMessage(id, message):
+  #print(message)
+  if id == 2: #garage side door
+    feedId=MyEnv.GARAGEDOOR_FEEDID
+    data=json.loads('{  "value": "' + str(message) + '" }')
 
-    def publish(self):
-        print ""
+  if feedId:
+    fullURL=url + str(feedId) + "/data?x-aio-key=" + MyEnv.API_KEY
+    response = requests.post(fullURL, data=data)
+    if response.status_code == 503:
+      print("Throttled save")
+    print(response)
+
+
+  #publish.single("alarm/" + str(id) , message, hostname=MyEnv.MQTT_HOST, port=MyEnv.MQTT_PORT)
+

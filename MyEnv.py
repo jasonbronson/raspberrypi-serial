@@ -1,4 +1,21 @@
 #!/usr/bin/python
 
-import dotenv
-from fabric.api import task, run, env
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+#Mqtt settings
+MQTT_HOST = os.environ.get("MQTT_HOST")
+MQTT_PORT = os.environ.get("MQTT_PORT")
+
+#serial port settings
+SERIAL_PORT = os.environ.get("SERIAL_PORT")
+BAUD_RATE = os.environ.get("BAUD_RATE")
+
+#feed ids
+GARAGEDOOR_FEEDID = os.environ.get("GARAGEDOOR_FEEDID")
+
+API_KEY= os.environ.get("API_KEY")
