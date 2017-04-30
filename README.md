@@ -18,7 +18,7 @@ MQTT_PORT=8883
 SERIAL_PORT="/dev/ttyACM0"
 BAUD_RATE=115200
 
-#io.adafruit
+# io.adafruit
 API_KEY=18ea6399ec3b4yourkeyhere
 GARAGEDOOR_FEEDID=123456
 
